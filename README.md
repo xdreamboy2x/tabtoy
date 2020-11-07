@@ -4,7 +4,6 @@
 
 ![tabtoylogo](doc/logo.png)
 
-
 # 特性
 * 支持Xlsx/CSV作为表格数据混合输入
 
@@ -19,7 +18,6 @@
 * 支持KV配置表, 方便将表格作为配置文件
 
 * 多核并发导出, 缓存加速, 上百文件秒级导出
-
 
 # 迭代历程
 
@@ -86,7 +84,6 @@ ID | 名称
 
 注意 数据表的表类型需要与类型表里的对象类型对应
 
-
 ## 编写导出shell
 
 
@@ -97,7 +94,6 @@ tabtoy.exe -mode=v3 -index=Index.xlsx -json_out=table_gen.json
 ```
 
 [完整例子文件](https://github.com/davyxu/tabtoy/tree/master/v3/example/tutorial)
-
 
 # 导出数据/源码/类型
 
@@ -111,7 +107,6 @@ tabtoy.exe -mode=v3 -index=Index.xlsx -package=main -go_out=table_gen.json -json
 读取数据源码:
 
 ```go
-
 	var Tab = NewTable()
 
 	// 表加载前清除之前的手动索引和表关联数据
@@ -277,8 +272,41 @@ tabtoy.exe -mode=v3 -index=Index.xlsx -lua_out=table_gen.lua
 
 导出命令行:
 ```bash
-tabtoy.exe -mode=v3 -index=Index.xlsx -jsontype_out=type_gen.json 
+tabtoy -mode=v3 -index=Index.xlsx -jsontype_out=type_gen.json 
 ```
+
+## 导出为Protobuf格式
+tabtoy可以将表类型及结构输出为Google Protobuf的proto格式, 同时输出与之对应的二进制格式(*.pbb)
+
+使用Protobuf的SDK即可方便的将表数据提供给所有Protobuf支持的语言
+
+以下例子展示Golang使用Protobuf读取表格输出文件
+
+* 导出proto文件:
+```bash
+tabtoy -mode=v3 -index=Index.xlsx -proto_out=table.proto 
+```
+
+* 导出proto二进制数据文件:
+```bash
+tabtoy -mode=v3 -index=Index.xlsx -pbbin_out=all.pbb
+```
+
+* Protobuf编译器protoc下载
+
+下载地址: https://github.com/protocolbuffers/protobuf/releases
+
+* 安装Golang的Protobuf生成插件
+```bash
+go install google.golang.org/protobuf/cmd/protoc-gen-go
+```
+
+* 将proto文件生成代码
+```bash
+protoc --go_out=. ./table.proto -I .
+```
+
+[完整Golang使用Protobuf例子](https://github.com/davyxu/tabtoy/tree/master/v3/example/protobuf/golang)
 
 # 按表导出
 
@@ -290,11 +318,11 @@ tabtoy默认情况下, 均是将数据, 源码一次性导出.出于以下原因
 
 * 按需更新数据, 减少模块耦合
 
-## Golang按需读取JSON数据(测试中)
+## Golang按需读取JSON数据
 
 导出命令行:
 ```bash
-tabtoy.exe -mode=v3 -index=Index.xlsx -package=main -go_out=table_gen.json -json_dir=.
+tabtoy -mode=v3 -index=Index.xlsx -package=main -go_out=table_gen.json -json_dir=.
 ```
 
 读取数据源码:
@@ -327,11 +355,11 @@ tabtoy.exe -mode=v3 -index=Index.xlsx -package=main -go_out=table_gen.json -json
 ```
 [完整Golang例子](https://github.com/davyxu/tabtoy/tree/master/v3/example/golang)
 
-## Lua按需读取Lua数据(测试中)
+## Lua按需读取Lua数据
 
 导出命令行:
 ```bash
-tabtoy.exe -mode=v3 -index=Index.xlsx -lua_dir=.
+tabtoy -mode=v3 -index=Index.xlsx -lua_dir=.
 ```
 
 读取数据源码:
@@ -366,10 +394,10 @@ tabtoy.exe -mode=v3 -index=Index.xlsx -lua_dir=.
 [完整Lua例子](https://github.com/davyxu/tabtoy/tree/master/v3/example/lua)
 [导出的Lua表](https://github.com/davyxu/tabtoy/tree/master/v3/example/luasrc)
 
-## C#按需读取二进制数据(测试中)
+## C#按需读取二进制数据
 导出命令行:
 ```bash
-tabtoy.exe -mode=v3 -index=Index.xlsx -package=main -csharp_out=table_gen.cs -binary_dir=.
+tabtoy -mode=v3 -index=Index.xlsx -package=main -csharp_out=table_gen.cs -binary_dir=.
    ```
 
 读取数据源码:
@@ -424,6 +452,11 @@ static void LoadSpecifiedTable()
 
 [完整C#例子](https://github.com/davyxu/tabtoy/tree/master/v3/example/csharp)
 
+## Golang使用Protobuf按需读取二进制数据
+[Golang例子](https://github.com/davyxu/tabtoy/tree/master/v3/example/protobuf/golang)
+
+
+
 # 特色功能
 
 ## 定义和使用枚举
@@ -467,7 +500,6 @@ Genji |
  
  [ 1 ]
 
-
 ## 使用多列数组
 
 种类 | 对象类型 | 标识名 | 字段名 | 字段类型 | 数组切割| 值 | 索引 | 标记
@@ -502,7 +534,6 @@ Genji |
 ExampleDataByID map[int32]*ExampleData
 ```
 
-
 ## 表拆分
 
 将ExampleData表, 拆为Data.csv, Data2.csv表
@@ -514,7 +545,6 @@ ExampleDataByID map[int32]*ExampleData
 数据表 | ExampleData | Data2.csv
 
 每个表中的字段可按需填写
-
 
 ## KV表
 
@@ -531,7 +561,6 @@ ExampleDataByID map[int32]*ExampleData
 ---|---|---|---|---|---|
 ServerIP | string | 服务器IP | 8.8.8.8
 ServerPort | uint16 | 服务器端口 | 1024  
-
 
 ## 空行分割
 
@@ -566,7 +595,6 @@ ID | 名称
 
 在任意表的首列单元格中首字符为#时，该行所有数据不会被导出
 
-
 ## 列数据注释
 
 表格数据如下:
@@ -584,10 +612,78 @@ ID | #名称
 
 表头中, 列字段首字符为#时，该列所有数据按默认值导出 
 
+## 不导出指定表
+实现此功能需要使用到TagAction, 参考下面例子配置:
 
-## 使用标记
+在Index表中:
 
-在类型表标记中添加字符串, 使用|做默认分割, 将在-jsontype导出json中获得字段关联的标记
+模式 | 表类型 | 表文件名 | 标记
+---|---|---|---|
+数据表 | Effect | Effect.csv | client
+数据表 | Password | Server.csv | server
+
+* 客户端数据导出
+导出参数中新增参数
+```shell script
+--tag_action=nogentable:server
+```
+表示, 不导出带有server标记的所有表格
+
+* 服务器数据导出
+导出参数中新增参数
+```shell script
+--tag_action=nogentable:client
+```
+表示, 不导出带有client标记的所有表格
+
+## 不输出指定列数据
+实现此功能需要使用到TagAction, 参考下面例子配置:
+
+在Type表中:
+
+种类 | 对象类型 | 标识名 | 字段名 | 字段类型 | 数组切割| 值 | 索引 | 标记
+---|---|---|---|---|---|---|---|---
+表头 | ExampleData | 特效ID| EffectID | int32 |  | | | client 
+表头 | ExampleData | 概率| Rate | float |  | | | server
+
+表中的特效ID, 只希望客户端导出数据中包含EffectID, 同时服务器导出数据中只包含Rate, 不希望将Rate字段导入客户端数据
+客户端导出为二进制, 服务器导出为json
+
+此时在相应字段所在的Type表中的"标记" 一列增加如表所示标记(如标记列不存在, 请新建)
+
+将原有导出流程拆分为客户端导出和服务器导出, 分两次分别导出不同需求的数据
+
+* 客户端数据导出
+导出参数中新增参数
+```shell script
+--tag_action=nogenfield_binary:server
+```
+表示: server标记的字段不导出到二进制
+
+* 服务器数据导出  
+导出参数中新增参数
+```shell script
+--tag_action=nogenfield_json:client
+```
+表示: client标记的字段不导出到json完整文件
+
+## TagAction参考说明
+
+### 格式
+```shell script
+--tag_action=action1:tag1+tag2|action2:tag1+tag3
+```
+* | 表示多个action
+* 被标记的tag, 将被对应action处理
+
+###action类型
+action | 适用范围 | 功能
+---|---|---|
+nogenfield_json | Type表 | 被标记的字段不导出到json完整文件中
+nogenfield_jsondir| Type表 | 被标记的字段不导出到每个表文件json
+nogenfield_binary| Type表 | 被标记的字段不导出到二进制中
+nogenfield_pbbin| Type表 | 被标记的字段不导出到Protobuf二进制中
+nogentable| Index表 | 被标记的表不会导出到任何输出中
 
 ## 启用缓冲
 命令行中加入-usecache=true, 将启用缓存功能, 加速导出速度
